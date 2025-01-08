@@ -1,0 +1,10 @@
+BasedOnStyle: LLVM
+SortIncludes: Never
+ColumnLimit: 120
+UseTab: Never
+AlignEscapedNewlines: Left
+AlignTrailingComments: true
+FixNamespaceComments: true
+AlignArrayOfStructures: Left
+BinPackArguments: false
+BinPackParameters: false

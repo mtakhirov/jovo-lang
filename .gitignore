@@ -1,0 +1,23 @@
+.idea/
+.cache/
+
+build*/
+cmake-build*/
+include/config.hpp
+
+/bin/
+/lib/
+
+# made by ctest
+Testing/
+
+coverage/
+
+*.o
+*.out
+*.pch
+*.gch
+*.log
+*.lib
+*.so
+*.a

@@ -1,0 +1,11 @@
+#ifndef __JOVO__CONFIG_H_
+#define __JOVO__CONFIG_H_
+
+#include <string>
+
+using std::string;
+
+constexpr unsigned int JOVO_VERSION_LIST[3] = {${JOVO_VERSION_MAJOR}, ${JOVO_VERSION_MINOR}, ${JOVO_VERSION_PATCH}};
+constexpr string JOVO_VERSION = "${JOVO_VERSION}";
+
+#endif // __JOVO__CONFIG_H_

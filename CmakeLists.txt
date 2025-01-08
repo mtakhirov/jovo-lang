@@ -1,0 +1,72 @@
+cmake_minimum_required(VERSION 3.19)
+
+# ==================== Version number ========================
+set(JOVO_VERSION "1.0.0")
+
+string(REPLACE "." ";" JOVO_VERSION_LIST ${JOVO_VERSION})
+
+list(GET JOVO_VERSION_LIST 0 VERSION_MAJOR)
+list(GET JOVO_VERSION_LIST 1 VERSION_MINOR)
+list(GET JOVO_VERSION_LIST 2 VERSION_PATCH)
+
+set(JOVO_VERSION_MAJOR ${VERSION_MAJOR})
+set(JOVO_VERSION_MINOR ${VERSION_MINOR})
+set(JOVO_VERSION_PATCH ${VERSION_PATCH})
+
+# =============================================================
+
+# ==================== =============== ========================
+project(jovo LANGUAGES CXX C VERSION ${JOVO_VERSION})
+set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake ${CMAKE_MODULE_PATH})
+# ==================== =============== ========================
+
+# ==================== =============== ========================
+configure_file("${PROJECT_SOURCE_DIR}/include/config.h.in" "${PROJECT_SOURCE_DIR}/include/config.hpp")
+
+macro(set_target_common_compile_options target_name)
+    message(STATUS "Loaded " ${target_name} "...")
+
+    get_property(prev_targets GLOBAL PROPERTY ALL_JOVO_TARGETS)
+    set_property(GLOBAL PROPERTY ALL_JOVO_TARGETS ${prev_targets} ${target_name})
+
+    if(MSVC)
+        target_compile_options(${target_name} PRIVATE /w)
+    else()
+        target_compile_options(${target_name}
+            PRIVATE -Wall
+            PRIVATE -Wextra
+            PRIVATE -pedantic-errors
+            PRIVATE -Wconversion)
+    endif()
+
+    target_include_directories(${target_name} PRIVATE ${PROJECT_SOURCE_DIR} ${PROJECT_SOURCE_DIR}/include)
+
+    if(${CMAKE_BUILD_TYPE} STREQUAL "Debug")
+        # add `DEBUG` and `_DEBUG` macro
+        target_compile_definitions(${target_name} PRIVATE -DDEBUG)
+        target_compile_definitions(${target_name} PRIVATE -D_DEBUG)
+
+        # =========== COVERAGE =========== #
+        if(${ENABLE_COVERAGE})
+            message(STATUS "Enabling test coverage")
+            target_compile_options(${target_name}
+                PUBLIC -O0
+                PUBLIC -fprofile-instr-generate
+                PUBLIC -fcoverage-mapping)
+            target_link_options(${target_name}
+                PUBLIC -fprofile-instr-generate
+                PUBLIC -fcoverage-mapping)
+        endif()
+    else()
+        target_compile_options(${target_name} PRIVATE -O3)
+    endif()
+endmacro()
+# ==================== =============== ========================
+
+# ==================== =============== ========================
+add_subdirectory(src)
+# ==================== =============== ========================
+
+get_property(all_targets GLOBAL PROPERTY ALL_JOVO_TARGETS)
+message(STATUS "All targets: ${all_targets}")
