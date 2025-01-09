@@ -1,0 +1,4 @@
+aux_source_directory(${CMAKE_CURRENT_LIST_DIR} SRCS)
+
+add_library(JovoParser STATIC ${SRCS})
+set_target_common_compile_options(JovoParser)
